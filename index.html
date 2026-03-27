@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>#TEAMRAFA — Consultoria Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1a56ff;
+    --blue-dark: #0d2bcc;
+    --blue-glow: rgba(26,86,255,0.4);
+    --bg: #080b10;
+    --bg2: #0d1118;
+    --white: #f0f4ff;
+    --grey: #8a9ab5;
+    --card: #0f1520;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* === CURSOR === */
+  body { cursor: none; }
+  #cursor {
+    width: 12px; height: 12px;
+    background: var(--blue);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, opacity 0.2s;
+    mix-blend-mode: screen;
+  }
+  #cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(26,86,255,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease;
+  }
+  a, button { cursor: none; }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(8,11,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(26,86,255,0.15);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--blue); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--blue);
+    border: none;
+    padding: 0.6rem 1.4rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .nav-cta:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+  /* === HERO === */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+    padding: 0 3rem 5rem;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #040610 0%, #060d1f 50%, #0a0e1a 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(26,86,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,86,255,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-accent {
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 60vw; height: 80vh;
+    background: radial-gradient(ellipse, rgba(26,86,255,0.12) 0%, transparent 70%);
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .hero-accent2 {
+    position: absolute;
+    bottom: -20%; left: -10%;
+    width: 40vw; height: 60vh;
+    background: radial-gradient(ellipse, rgba(26,86,255,0.07) 0%, transparent 70%);
+    animation: pulse 8s ease-in-out infinite reverse;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+  .hero-stripe {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, transparent, var(--blue), transparent);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 800px; }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--blue);
+    border: 1px solid rgba(26,86,255,0.4);
+    padding: 0.35rem 1rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.5s;
+  }
+  .hero-title .blue { color: var(--blue); }
+  .hero-sub {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--grey);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.7s;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+  .btn-primary {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--blue);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+  .btn-primary:hover {
+    background: var(--blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--blue-glow);
+  }
+  .btn-outline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.9rem 2.2rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, transform 0.2s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+  .btn-outline:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .hero-scroll {
+    position: absolute;
+    right: 3rem; bottom: 3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--grey);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.2s;
+  }
+  .hero-scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(transparent, var(--blue));
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === SECTIONS COMMON === */
+  section { padding: 7rem 3rem; }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  /* === ABOUT === */
+  #sobre {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+  }
+  #sobre::before {
+    content: 'RAFA';
+    position: absolute;
+    right: -2rem; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20rem;
+    color: rgba(26,86,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .about-img-wrap {
+    position: relative;
+  }
+  .about-img-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--card);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(26,86,255,0.2);
+  }
+  .about-img-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(8,11,16,0.9) 100%);
+  }
+  .about-img-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #0d1525 0%, #111c35 50%, #0a1020 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-img-icon {
+    font-size: 8rem;
+    opacity: 0.15;
+    filter: grayscale(1);
+  }
+  .about-accent-line {
+    position: absolute;
+    top: 2rem; left: -1rem;
+    width: 3px; height: 80%;
+    background: linear-gradient(var(--blue), transparent);
+  }
+  .about-tag {
+    position: absolute;
+    bottom: 2rem; left: 2rem; right: 2rem;
+    z-index: 2;
+    display: flex; gap: 1.5rem;
+  }
+  .about-stat {
+    background: rgba(8,11,16,0.9);
+    border: 1px solid rgba(26,86,255,0.3);
+    padding: 1rem 1.2rem;
+    flex: 1;
+  }
+  .about-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--blue);
+    line-height: 1;
+  }
+  .about-stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-top: 0.3rem;
+  }
+  .about-text p {
+    color: var(--grey);
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+  }
+  .about-text p strong { color: var(--white); font-weight: 500; }
+  .gyms {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin: 2rem 0;
+  }
+  .gym-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    border: 1px solid rgba(26,86,255,0.35);
+    padding: 0.3rem 0.8rem;
+  }
+
+  /* === SERVICES === */
+  #servicos { background: var(--bg); }
+  .services-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    align-items: end;
+  }
+  .services-desc {
+    color: var(--grey);
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5px;
+    background: rgba(26,86,255,0.15);
+  }
+  .service-card {
+    background: var(--card);
+    padding: 2.5rem;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--blue);
+    transition: height 0.4s ease;
+  }
+  .service-card:hover { background: #111a28; }
+  .service-card:hover::before { height: 100%; }
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+  .service-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+    color: var(--white);
+  }
+  .service-desc {
+    color: var(--grey);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* === PLANOS === */
+  #planos { background: var(--bg2); }
+  .plans-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 860px;
+    margin: 3rem auto 0;
+  }
+  .plan-card {
+    border: 1px solid rgba(26,86,255,0.2);
+    background: var(--card);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .plan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(26,86,255,0.15);
+  }
+  .plan-card.featured {
+    border-color: var(--blue);
+    background: linear-gradient(135deg, #0d1a35 0%, #0a1225 100%);
+  }
+  .plan-badge {
+    position: absolute;
+    top: -1px; right: 2rem;
+    background: var(--blue);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    color: var(--white);
+  }
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    color: var(--grey);
+    margin-bottom: 0.5rem;
+  }
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .plan-price sup {
+    font-size: 1.5rem;
+    vertical-align: super;
+  }
+  .plan-period {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 2rem;
+  }
+  .plan-divider {
+    height: 1px;
+    background: rgba(26,86,255,0.2);
+    margin-bottom: 1.8rem;
+  }
+  .plan-features { list-style: none; margin-bottom: 2rem; }
+  .plan-features li {
+    font-size: 0.9rem;
+    color: var(--grey);
+    padding: 0.5rem 0;
+    display: flex; align-items: center; gap: 0.7rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .plan-features li::before {
+    content: '→';
+    color: var(--blue);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .plan-saving {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4ade80;
+    background: rgba(74,222,128,0.1);
+    padding: 0.3rem 0.8rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  .payment-info {
+    text-align: center;
+    margin-top: 3rem;
+    color: var(--grey);
+    font-size: 0.9rem;
+  }
+  .payment-methods {
+    display: flex; gap: 1rem; justify-content: center;
+    margin-top: 1rem;
+  }
+  .pay-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: rgba(26,86,255,0.15);
+    border: 1px solid rgba(26,86,255,0.3);
+    padding: 0.35rem 0.9rem;
+  }
+
+  /* === COMO FUNCIONA === */
+  #como-funciona { background: var(--bg); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .steps::after {
+    content: '';
+    position: absolute;
+    top: 2rem; left: 3rem; right: 3rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), var(--blue), var(--blue), transparent);
+    opacity: 0.3;
+  }
+  .step {
+    padding: 3rem 2rem 2rem;
+    position: relative;
+    border-right: 1px solid rgba(26,86,255,0.1);
+  }
+  .step:last-child { border-right: none; }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: rgba(26,86,255,0.15);
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  .step-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--blue);
+    position: absolute;
+    top: 1.6rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    box-shadow: 0 0 12px var(--blue-glow);
+  }
+  .step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.7rem;
+  }
+  .step-desc {
+    color: var(--grey);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* === CTA === */
+  #contato {
+    background: linear-gradient(135deg, #060e24 0%, #040810 100%);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 8rem 3rem;
+  }
+  #contato::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(26,86,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,86,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .cta-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(26,86,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-content { position: relative; z-index: 2; }
+  .cta-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1.5rem;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+  }
+  .cta-title .blue { color: var(--blue); }
+  .cta-desc {
+    color: var(--grey);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+  .cta-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--blue);
+    border: none;
+    padding: 1.1rem 3rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.25s;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    box-shadow: 0 0 40px rgba(26,86,255,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .cta-btn:hover {
+    background: var(--blue-dark);
+    box-shadow: 0 0 60px rgba(26,86,255,0.5);
+    transform: translateY(-2px);
+  }
+  .cta-btn:hover::after { transform: translateX(100%); }
+  .cta-insta {
+    margin-top: 2rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    color: var(--grey);
+  }
+  .cta-insta a { color: var(--blue); text-decoration: none; }
+  .cta-insta a:hover { color: var(--white); }
+
+  /* === FOOTER === */
+  footer {
+    background: #040608;
+    border-top: 1px solid rgba(26,86,255,0.1);
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    color: var(--grey);
+  }
+  .footer-logo span { color: var(--blue); }
+  .footer-copy {
+    font-size: 0.8rem;
+    color: rgba(138,154,181,0.4);
+  }
+
+  /* === FLOATING HASHTAG === */
+  .floating-hash {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: var(--blue);
+    background: rgba(8,11,16,0.9);
+    border: 1px solid rgba(26,86,255,0.3);
+    padding: 0.6rem 1rem;
+    z-index: 50;
+    text-decoration: none;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    animation: floatBlink 3s ease-in-out infinite;
+  }
+  @keyframes floatBlink {
+    0%, 100% { box-shadow: 0 0 10px rgba(26,86,255,0.2); }
+    50% { box-shadow: 0 0 20px rgba(26,86,255,0.5); }
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 0 1.5rem 4rem; }
+    #sobre { grid-template-columns: 1fr; gap: 3rem; }
+    .services-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .plans-wrap { grid-template-columns: 1fr; max-width: 420px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps::after { display: none; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    #cursor, #cursor-ring { display: none; }
+    body, a, button { cursor: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">#TEAM<span>RAFA</span></a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#como-funciona">Como Funciona</a></li>
+    <li><a href="#planos">Planos</a></li>
+  </ul>
+  <a href="https://wa.me/+5585986683222" class="nav-cta">Quero meu treino</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-accent2"></div>
+  <div class="hero-stripe"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Consultoria Online de Treino · #TeamRafa</div>
+    <h1 class="hero-title">
+      Rumo a uma<br>
+      vida mais<br>
+      <span class="blue">saudável</span><br>
+      e ativa
+    </h1>
+    <p class="hero-sub">Treinos personalizados, acompanhamento de perto e resultados reais. Invista em você.</p>
+    <div class="hero-btns">
+      <a href="#planos" class="btn-primary">Ver Planos</a>
+      <a href="#sobre" class="btn-outline">Conheça o Prof. Rafa</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="about-img-wrap">
+    <div class="about-img-frame">
+      <div class="about-img-placeholder">
+        <span class="about-img-icon">🏋️</span>
+      </div>
+      <div class="about-accent-line"></div>
+    </div>
+    <div class="about-tag">
+      <div class="about-stat">
+        <div class="about-stat-num">4+</div>
+        <div class="about-stat-label">Anos de Exp.</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-num">100%</div>
+        <div class="about-stat-label">Personalizado</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-text">
+    <div class="section-label">Quem é Rafael Felipe?</div>
+    <h2 class="section-title">Personal Trainer<br>com <span style="color:var(--blue)">propósito</span></h2>
+    <p>Com <strong>4 anos de experiência</strong>, tive o privilégio de trabalhar em algumas das maiores academias do Ceará. Meu foco é na musculação voltada para <strong>emagrecimento e hipertrofia</strong>, sempre promovendo saúde e bem-estar.</p>
+    <p>Acredito que cada pessoa é única. Por isso, desenvolvo treinos personalizados que respeitam suas necessidades, objetivos e limitações. Minha missão é ajudá-lo a alcançar resultados de forma <strong>segura, eficiente e sustentável</strong>.</p>
+    <div class="gyms">
+      <span class="gym-tag">Greenlife</span>
+      <span class="gym-tag">Bluefit</span>
+      <span class="gym-tag">Gaviões</span>
+      <span class="gym-tag">Porão</span>
+    </div>
+    <a href="#contato" class="btn-primary">Falar com Rafa</a>
+  </div>
+</section>
+
+<!-- SERVIÇOS -->
+<section id="servicos">
+  <div class="services-intro">
+    <div>
+      <div class="section-label">O que você recebe</div>
+      <h2 class="section-title">Tudo o que<br>você <span style="color:var(--blue)">precisa</span></h2>
+    </div>
+    <p class="services-desc">Uma consultoria online completa com suporte real, treinos feitos pra você e acompanhamento que faz diferença no dia a dia.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-icon">📋</span>
+      <div class="service-title">Treino Personalizado</div>
+      <p class="service-desc">Cada plano é desenvolvido exclusivamente para atender às suas necessidades, objetivos e nível de condicionamento físico.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">💬</span>
+      <div class="service-title">Acompanhamento via WhatsApp</div>
+      <p class="service-desc">Comunicação direta comigo para tirar dúvidas, ajustar o treino e garantir que você esteja sempre no caminho certo.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">📱</span>
+      <div class="service-title">App Exclusivo de Treinos</div>
+      <p class="service-desc">Todo o seu plano acessado facilmente através de um aplicativo exclusivo, com praticidade e organização.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🔍</span>
+      <div class="service-title">Avaliação Postural</div>
+      <p class="service-desc">Realizada com base em fotos, garantindo um treino seguro e adaptado à sua realidade física, evitando lesões.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="como-funciona">
+  <div class="section-label">Processo</div>
+  <h2 class="section-title">Como <span style="color:var(--blue)">funciona</span></h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot"></div>
+      <div class="step-num">01</div>
+      <div class="step-title">Escolha seu plano</div>
+      <p class="step-desc">Selecione entre o plano mensal ou bimestral, o que melhor se encaixa nos seus objetivos.</p>
+    </div>
+    <div class="step">
+      <div class="step-dot"></div>
+      <div class="step-num">02</div>
+      <div class="step-title">Avaliação inicial</div>
+      <p class="step-desc">Envio de fotos para avaliação postural e conversa sobre seus objetivos, histórico e limitações.</p>
+    </div>
+    <div class="step">
+      <div class="step-dot"></div>
+      <div class="step-num">03</div>
+      <div class="step-title">Receba seu treino</div>
+      <p class="step-desc">Em até 3 dias úteis você recebe o treino personalizado no aplicativo exclusivo.</p>
+    </div>
+    <div class="step">
+      <div class="step-dot"></div>
+      <div class="step-num">04</div>
+      <div class="step-title">Evolua com suporte</div>
+      <p class="step-desc">Acompanhamento contínuo via WhatsApp, ajustes quando necessário e motivação em cada etapa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section id="planos">
+  <div class="section-label">Investimento</div>
+  <h2 class="section-title" style="text-align:center">Escolha seu <span style="color:var(--blue)">plano</span></h2>
+  <div class="plans-wrap">
+    <div class="plan-card">
+      <div class="plan-name">Mensal</div>
+      <div class="plan-price"><sup>R$</sup>190</div>
+      <div class="plan-period">por mês</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Treino 100% personalizado</li>
+        <li>Avaliação postural por fotos</li>
+        <li>Acesso ao app exclusivo</li>
+        <li>Suporte via WhatsApp</li>
+        <li>Ajustes no treino</li>
+      </ul>
+      <a href="https://wa.me/+5585986683222" class="btn-primary" style="width:100%;text-align:center;display:block">Começar agora</a>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">Mais econômico</div>
+      <div class="plan-name">Bimestral</div>
+      <div class="plan-price"><sup>R$</sup>300</div>
+      <div class="plan-period">a cada 2 meses</div>
+      <div class="plan-saving">Economia de R$80</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Treino 100% personalizado</li>
+        <li>Avaliação postural por fotos</li>
+        <li>Acesso ao app exclusivo</li>
+        <li>Suporte via WhatsApp</li>
+        <li>Ajustes no treino</li>
+        <li>Comprometimento maior = resultado</li>
+      </ul>
+      <a href="https://wa.me/+5585986683222" class="btn-primary" style="width:100%;text-align:center;display:block">Começar agora</a>
+    </div>
+  </div>
+  <div class="payment-info">
+    <p>Formas de pagamento aceitas</p>
+    <div class="payment-methods">
+      <span class="pay-badge">PIX</span>
+      <span class="pay-badge">Cartão de Crédito</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contato">
+  <div class="cta-glow"></div>
+  <div class="cta-content">
+    <div class="cta-label">Pronto para começar?</div>
+    <h2 class="cta-title">Invista em<br><span class="blue">você hoje</span></h2>
+    <p class="cta-desc">Transforme sua rotina com um método eficiente, acessível e feito para o seu corpo. Vamos juntos nessa jornada!</p>
+    <a href="https://wa.me/+5585986683222" class="cta-btn">Quero meu treino personalizado</a>
+    <div class="cta-insta">
+      Siga no Instagram: <a href="https://instagram.com/prof_rafaelfelipe" target="_blank">@prof_rafaelfelipe</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">#TEAM<span>RAFA</span></div>
+  <div class="footer-copy">© 2025 Prof. Rafael Felipe · Consultoria Online de Treino</div>
+</footer>
+
+<!-- FLOATING CTA -->
+<a href="https://wa.me/+5585986683222" class="floating-hash">💬 WhatsApp</a>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.service-card, .step, .plan-card, .about-stat');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '0';
+        e.target.style.transform = 'translateY(20px)';
+        e.target.style.transition = `opacity 0.6s ease ${i * 0.1}s, transform 0.6s ease ${i * 0.1}s`;
+        setTimeout(() => {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }, 50);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
